@@ -10,13 +10,6 @@ module.exports = ({address, privateKey}) => {
             }
             return [];
         },
-        getTreeHeight: async () => {
-            const state = await contract.getSubState("tree_height");
-            if (state) {
-                return parseInt(state["tree_height"]);
-            }
-            return 0;
-        },
         isSpent: async (nullifier) => {
             const state = await contract.getSubState("nullifiers", [nullifier.toString()]);
             if (state) {
@@ -24,5 +17,12 @@ module.exports = ({address, privateKey}) => {
             }
             return false;
         },
+        getIndex: async () => {
+            const state = await contract.getSubState("index");
+            if (state) {
+                return parseInt(state["index"]);
+            }
+            return -1;
+        }
     });
 };

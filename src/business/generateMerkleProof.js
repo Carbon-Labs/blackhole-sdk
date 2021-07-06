@@ -1,8 +1,9 @@
 const MerkleTree = require("../lib/MerkleTree");
-module.exports = (blackhole) => async ({commitment, nullifier}) => {
+module.exports = (blackhole) => async ({commitment, nullifier, index}) => {
     // Get all deposit events from smart contract and assemble merkle tree from them
     console.log('Getting current state from tornado contract');
-    const leaves = await blackhole.getCommitments();
+    const leaves = await blackhole.getCommitments(index);
+    console.log(leaves);
     const MERKLE_TREE_HEIGHT = 7;
     const tree = new MerkleTree(MERKLE_TREE_HEIGHT, null, "blackhole");
 
@@ -19,13 +20,13 @@ module.exports = (blackhole) => async ({commitment, nullifier}) => {
     });
 
     if (leafIndex === -1) {
-        throw new Error("No commit found");
+        throw new Error("No commit index found");
     }
 
     const isSpent = await blackhole.isSpent(nullifier);
 
     if (isSpent) {
-        throw new Error("No commit found");
+        throw new Error("nullifier is already spent");
     }
 
     return tree.path(leafIndex);

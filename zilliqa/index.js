@@ -6,7 +6,8 @@ const {blockchain, isTest} = require("../config");
 module.exports = (privateKey) => {
     const zilliqa = new Zilliqa(blockchain.api);
     const VERSION = bytes.pack(blockchain.chainId, blockchain.msgVersion);
-    zilliqa.wallet.addByPrivateKey(privateKey);
+    if (privateKey)
+        zilliqa.wallet.addByPrivateKey(privateKey);
     const address = privateKey ? getAddressFromPrivateKey(privateKey) : null;
 
 

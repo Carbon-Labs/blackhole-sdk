@@ -9,13 +9,14 @@ const parseSecret = require("./src/business/parseSecret");
 module.exports = () => Object.freeze({
     generateDeposit,
     createSecretNote,
-    generateMerkleProof: ({contractAddress, isZRC2, commitment, nullifier}) =>
+    generateMerkleProof: ({contractAddress, isZRC2, commitment, nullifier, index}) =>
         isZRC2 ?
             MerkleProof(client.zrc2({address: contractAddress}))({
                 commitment,
-                nullifier
+                nullifier,
+                index
             }) :
-            MerkleProof(client.zil({address: contractAddress}))({commitment, nullifier}),
+            MerkleProof(client.zil({address: contractAddress}))({commitment, nullifier, index}),
     generateInput,
     snarkVerify,
     parseSecret,

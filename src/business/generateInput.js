@@ -1,5 +1,7 @@
 const stringifyBigInts = require('websnark/tools/stringifybigint').stringifyBigInts;
 const pedersenHash = require("./pedersenHash");
+const snarkjs = require("snarkjs");
+const bigInt = snarkjs.bigInt;
 const fee = bigInt(1000).shr(1) || bigInt(1e17);
 const refund = bigInt(1000);
 const rbigint = require("./generateRandomBigInt");

@@ -217,7 +217,7 @@ module.exports = (privateKey) => {
         getZilBlackhole: async () => {
             const state = await contract.getSubState("zil_blackholes");
             if (state) {
-                const all = state["token_blackholes"];
+                const all = state["zil_blackholes"];
                 return Object.keys(all).map(key => ({
                     amount: parseInt(key),
                     contract_address: all[key]

@@ -1,7 +1,7 @@
 {
   "name": "blackhole-sdk",
-  "version": "1.0.2",
-  "description": "",
+  "version": "1.0.3",
+  "description": "This package library is for interacting with CARBON Blackhole smart contracts on zilliqa blockchain",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\"",
@@ -13,6 +13,7 @@
   },
   "keywords": [],
   "author": "Anas Saber <anastal2001@yahoo.com>",
+  "repository": "https://github.com/Carbon-Labs/blackhole-sdk.git",
   "license": "ISC",
   "dependencies": {
     "circom": "^0.0.35",

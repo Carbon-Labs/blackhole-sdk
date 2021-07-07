@@ -1,5 +1,5 @@
-const buildGroth16 = require('src/lib/websnark/src/groth16');
-const websnarkUtils = require('src/lib/websnark/src/utils');
+const buildGroth16 = require('../lib/websnark/src/groth16');
+const websnarkUtils = require('../lib/websnark/src/utils');
 const {files: {withdrawProvUrl, withdrawUrl}} = require("../../config");
 module.exports = (request = fetch) => async (input) => {
     const responseProve = await request(withdrawProvUrl);

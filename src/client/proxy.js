@@ -2,9 +2,13 @@ const Zilliqa = require("../../zilliqa");
 const {proxyContract} = require("../../config");
 module.exports = (privateKey) => {
     const zilliqa = Zilliqa(privateKey);
-
+    const contract = zilliqa.at(proxyContract);
     return Object.freeze({
-        DepositToken: async ({commit, token_address, contract_amount}) => zilliqa.callTransition(proxyContract, "DepositToken", [
+        DepositToken: async ({
+                                 commit,
+                                 token_address,
+                                 contract_amount
+                             }) => zilliqa.callTransition(proxyContract, "DepositToken", [
             {
                 vname: 'commit',
                 type: 'Uint256',
@@ -21,7 +25,15 @@ module.exports = (privateKey) => {
                 value: `${contract_amount}`,
             }
         ]),
-        WithdrawToken: async ({token_address, contract_amount, proof, root, nullifier, recipient, treeIndex}) => zilliqa.callTransition(proxyContract, "WithdrawToken", [
+        WithdrawToken: async ({
+                                  token_address,
+                                  contract_amount,
+                                  proof,
+                                  root,
+                                  nullifier,
+                                  recipient,
+                                  treeIndex
+                              }) => zilliqa.callTransition(proxyContract, "WithdrawToken", [
             {
                 vname: 'token_address',
                 type: 'ByStr20',
@@ -83,7 +95,14 @@ module.exports = (privateKey) => {
                 value: `${proof.publicSignals.map(point => point.toString())}`,
             },
         ]),
-        WithdrawZil: async ({amount, proof, root, nullifier, recipient, treeIndex}) => zilliqa.callTransition(proxyContract, "WithdrawZil", [
+        WithdrawZil: async ({
+                                amount,
+                                proof,
+                                root,
+                                nullifier,
+                                recipient,
+                                treeIndex
+                            }) => zilliqa.callTransition(proxyContract, "WithdrawZil", [
             {
                 vname: 'amount',
                 type: 'Uint128',
@@ -140,14 +159,18 @@ module.exports = (privateKey) => {
                 value: `${proof.publicSignals.map(point => point.toString())}`,
             },
         ]),
-        VerifyProofToken: async ({contract_address, nullifier, verified}) => zilliqa.callTransition(proxyContract, "VerifyProofToken", [
+        VerifyProofToken: async ({
+                                     contract_address,
+                                     nullifier,
+                                     verified
+                                 }) => zilliqa.callTransition(proxyContract, "VerifyProofToken", [
             {
                 vname: "proof",
-                argtypes: ["Uint256","Bool"],
+                argtypes: ["Uint256", "Bool"],
                 arguments: [nullifier.toString(),
                     {
-                        argtypes:[],
-                        arguments:[],
+                        argtypes: [],
+                        arguments: [],
                         constructor: verified ? "True" : "False"
                     }],
                 constructor: "Pair"
@@ -158,14 +181,18 @@ module.exports = (privateKey) => {
                 value: `${contract_address}`,
             },
         ]),
-        VerifyProofZil: async ({contract_address, nullifier, verified}) => zilliqa.callTransition(proxyContract, "VerifyProofZil", [
+        VerifyProofZil: async ({
+                                   contract_address,
+                                   nullifier,
+                                   verified
+                               }) => zilliqa.callTransition(proxyContract, "VerifyProofZil", [
             {
                 vname: "proof",
-                argtypes: ["Uint256","Bool"],
+                argtypes: ["Uint256", "Bool"],
                 arguments: [nullifier.toString(),
                     {
-                        argtypes:[],
-                        arguments:[],
+                        argtypes: [],
+                        arguments: [],
                         constructor: verified ? "True" : "False"
                     }],
                 constructor: "Pair"
@@ -175,6 +202,49 @@ module.exports = (privateKey) => {
                 type: 'ByStr20',
                 value: `${contract_address}`,
             },
-        ])
+        ]),
+        getZRC2Blackhole: async (token_address) => {
+            const state = await contract.getSubState("token_blackholes", [token_address.toLowerCase()]);
+            if (state) {
+                const all = state["token_blackholes"][token_address.toLowerCase()];
+                return Object.keys(all).map(key => ({
+                    contract_address: key,
+                    amount: parseInt(all[key])
+                }));
+            }
+            return [];
+        },
+        getZilBlackhole: async () => {
+            const state = await contract.getSubState("zil_blackholes");
+            if (state) {
+                const all = state["token_blackholes"];
+                return Object.keys(all).map(key => ({
+                    amount: parseInt(key),
+                    contract_address: all[key]
+                }));
+            }
+            return [];
+        },
+        getZilEmissionRate: async () => {
+            const state = await contract.getSubState("zil_emission_rate");
+            if (state) {
+                return parseInt(state["zil_emission_rate"]);
+            }
+            return 0;
+        },
+        getZRC2EmissionRate: async (token_address) => {
+            const state = await contract.getSubState("token_emission_rate", [token_address.toLowerCase()]);
+            if (state) {
+                return parseInt(state["token_emission_rate"][token_address.toLowerCase()]);
+            }
+            return 0;
+        },
+        getFeeRate: async () => {
+            const state = await contract.getSubState("fee_rate");
+            if (state) {
+                return parseInt(state["fee_rate"]) / 10000;
+            }
+            return 0;
+        }
     });
 };

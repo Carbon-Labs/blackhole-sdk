@@ -1,6 +1,6 @@
 {
   "name": "blackhole-sdk",
-  "version": "1.0.5",
+  "version": "1.0.8",
   "description": "This package library is for interacting with CARBON Blackhole smart contracts on zilliqa blockchain",
   "main": "index.js",
   "scripts": {

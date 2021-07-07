@@ -1,6 +1,6 @@
 module.exports = (secret) => {
     const arr = secret.split("#");
-    if (arr.length !== 7) {
+    if (arr.length !== 8) {
         throw new Error("not valid note");
     }
     return {
@@ -10,6 +10,7 @@ module.exports = (secret) => {
         token_address: arr[1] === "zrc2" ? arr[3].toLowerCase() : undefined,
         secret: BigInt(arr[4]),
         nullifier: BigInt(arr[5]),
-        index: BigInt(arr[6])
+        index: BigInt(arr[6]),
+        commitment: BigInt(arr[7]),
     };
 };

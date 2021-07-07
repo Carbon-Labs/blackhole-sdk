@@ -1,13 +1,13 @@
 {
   "name": "blackhole-sdk",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "This package library is for interacting with CARBON Blackhole smart contracts on zilliqa blockchain",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\"",
     "build:circuit:compile": "npx circom circuits/withdraw.circom -o build/circuits/withdraw.json && npx snarkjs info -c build/circuits/withdraw.json",
     "build:circuit:setup": "npx snarkjs setup --protocol groth -c build/circuits/withdraw.json --pk build/circuits/withdraw_proving_key.json --vk build/circuits/withdraw_verification_key.json",
-    "build:circuit:bin": "node node_modules/websnark/tools/buildpkey.js -i build/circuits/withdraw_proving_key.json -o build/circuits/withdraw_proving_key.bin",
+    "build:circuit:bin": "node src/lib/websnark/tools/buildpkey.js -i build/circuits/withdraw_proving_key.json -o build/circuits/withdraw_proving_key.bin",
     "build:circuit": "mkdir -p build/circuits && npm run build:circuit:compile && npm run build:circuit:setup && npm run build:circuit:bin",
     "build": "npm run build:circuit"
   },
@@ -21,7 +21,6 @@
     "commander": "^4.1.1",
     "dotenv": "^8.2.0",
     "snarkjs": "git+https://github.com/tornadocash/snarkjs.git#869181cfaf7526fe8972073d31655493a04326d5",
-    "websnark": "git+https://github.com/tornadocash/websnark.git#2041cfa5fa0b71cd5cca9022a4eeea4afe28c9f7",
     "fixed-merkle-tree": "^0.5.0",
     "@zilliqa-js/contract": "^2.2.1",
     "@zilliqa-js/account": "^2.2.1",

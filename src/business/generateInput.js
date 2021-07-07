@@ -1,4 +1,4 @@
-const stringifyBigInts = require('websnark/tools/stringifybigint').stringifyBigInts;
+const stringifyBigInts = require('src/lib/websnark/tools/stringifybigint').stringifyBigInts;
 const nullifierHash = require("./nullifierHash");
 const snarkjs = require("snarkjs");
 const bigInt = snarkjs.bigInt;

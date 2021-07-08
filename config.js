@@ -7,7 +7,7 @@ module.exports = Object.freeze({
         msgVersion: 1,
     },
     carbonToken: process.env.NODE_ENV === "production" ? "0x1720dcaef87686003f0532792450b03966543d6a" : "0x1720dcaef87686003f0532792450b03966543d6a",
-    proxyContract: process.env.NODE_ENV === "production" ? "0xebf46306adda6021228c236f9418a13f2d5a00ae" : "0xebf46306adda6021228c236f9418a13f2d5a00ae",
+    proxyContract: process.env.NODE_ENV === "production" ? "0x47f4e262aaacc411d45d8201f2b881023ca3e2c4" : "0x47f4e262aaacc411d45d8201f2b881023ca3e2c4",
     files: {
         withdrawProvUrl: "https://siasky.net/AABR0XVHg7SDyVKNk0xqHnkojFIzharCC3QtpyTLHYojDg",
         withdrawVerificationUrl: "https://siasky.net/CADe3pSNzXpMp4ZaNeyZMefnKv1fmRIsfuyP8EYOWpPLAA",

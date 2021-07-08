@@ -23,6 +23,13 @@ module.exports = ({address, privateKey}) => {
                 return parseInt(state["index"]);
             }
             return -1;
-        }
+        },
+        Deposit: async ({commit}) => zilliqa.callTransition(address, "Deposit", [
+            {
+                vname: 'commit',
+                type: 'Uint256',
+                value: `${commit}`,
+            },
+        ]),
     });
 };

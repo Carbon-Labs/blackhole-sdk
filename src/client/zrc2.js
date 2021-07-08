@@ -25,12 +25,5 @@ module.exports = ({address, privateKey}) => {
             }
             return -1;
         },
-        Deposit: async ({commit}) => zilliqa.callTransition(proxyContract, "Deposit", [
-            {
-                vname: 'commit',
-                type: 'Uint256',
-                value: `${commit}`,
-            },
-        ]),
     });
 };

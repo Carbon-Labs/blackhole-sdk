@@ -4,6 +4,7 @@ module.exports = (privateKey) => {
     const zilliqa = Zilliqa(privateKey);
     const contract = zilliqa.at(proxyContract);
     return Object.freeze({
+        proxyContract,
         DepositToken: async ({
                                  commit,
                                  token_address,

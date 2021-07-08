@@ -160,11 +160,12 @@ module.exports = (privateKey) => {
                 value: `${proof.publicSignals.map(point => point.toString())}`,
             },
         ]),
-        VerifyProofToken: async ({
-                                     contract_address,
-                                     nullifier,
-                                     verified
-                                 }) => zilliqa.callTransition(proxyContract, "VerifyProofToken", [
+        VerifyProof: async ({
+                                contract_address,
+                                nullifier,
+                                verified,
+                                index,
+                            }) => zilliqa.callTransition(proxyContract, "VerifyProofToken", [
             {
                 vname: "proof",
                 argtypes: ["Uint256", "Bool"],
@@ -181,29 +182,26 @@ module.exports = (privateKey) => {
                 type: 'ByStr20',
                 value: `${contract_address}`,
             },
-        ]),
-        VerifyProofZil: async ({
-                                   contract_address,
-                                   nullifier,
-                                   verified
-                               }) => zilliqa.callTransition(proxyContract, "VerifyProofZil", [
             {
-                vname: "proof",
-                argtypes: ["Uint256", "Bool"],
-                arguments: [nullifier.toString(),
-                    {
-                        argtypes: [],
-                        arguments: [],
-                        constructor: verified ? "True" : "False"
-                    }],
-                constructor: "Pair"
-            },
-            {
-                vname: 'contract_address',
-                type: 'ByStr20',
-                value: `${contract_address}`,
+                vname: 'index',
+                type: 'Uint256',
+                value: `${index.toString()}`,
             },
         ]),
+        getToProof: async () => {
+            const state = await contract.getSubState("to_withdraws");
+            if (state) {
+                return Object.keys(state).map(key => {
+                    const pair = state[key];
+                    return {
+                        index: key,
+                        contract_amount: pair.arguments[0],
+                        nullifier: BigInt(pair.arguments[1]),
+                    };
+                });
+            }
+            return [];
+        },
         getZRC2Blackhole: async (token_address) => {
             const state = await contract.getSubState("token_blackholes", [token_address.toLowerCase()]);
             if (state) {

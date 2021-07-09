@@ -165,17 +165,20 @@ module.exports = (privateKey) => {
                                 nullifier,
                                 verified,
                                 index,
-                            }) => zilliqa.callTransition(proxyContract, "VerifyProofToken", [
+                            }) => zilliqa.callTransition(proxyContract, "VerifyProof", [
             {
                 vname: "proof",
-                argtypes: ["Uint256", "Bool"],
-                arguments: [nullifier.toString(),
-                    {
-                        argtypes: [],
-                        arguments: [],
-                        constructor: verified ? "True" : "False"
-                    }],
-                constructor: "Pair"
+                type: "Pair Uint256 Bool",
+                value: {
+                    argtypes: ["Uint256", "Bool"],
+                    arguments: [nullifier.toString(),
+                        {
+                            argtypes: [],
+                            arguments: [],
+                            constructor: verified ? "True" : "False"
+                        }],
+                    constructor: "Pair"
+                }
             },
             {
                 vname: 'contract_address',

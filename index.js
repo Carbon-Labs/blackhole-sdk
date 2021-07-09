@@ -1,4 +1,5 @@
 const client = require("./src/client");
+const MerkleTree = require("./src/lib/MerkleTree");
 const MerkleProof = require("./src/business/generateMerkleProof");
 const generateProof = require("./src/business/generateProof");
 const createSecretNote = require("./src/business/createSecretNote");
@@ -12,6 +13,7 @@ module.exports = (request = fetch) => Object.freeze({
     generateDeposit,
     createSecretNote,
     knownProof,
+    MerkleTree,
     generateMerkleProof: ({contractAddress, isZRC2, commitment, nullifier, index}) =>
         isZRC2 ?
             MerkleProof(client.zrc2({address: contractAddress}))({

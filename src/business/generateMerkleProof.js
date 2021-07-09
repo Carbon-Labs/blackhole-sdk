@@ -23,9 +23,9 @@ module.exports = (blackhole) => async ({commitment, nullifier, index}) => {
         throw new Error("No commit index found");
     }
 
-    const isSpent = await blackhole.isSpent(nullifier);
+    const isExist = await blackhole.isExist(nullifier);
 
-    if (isSpent) {
+    if (isExist) {
         throw new Error("nullifier is already spent");
     }
 

@@ -194,8 +194,9 @@ module.exports = (privateKey) => {
         getToProof: async () => {
             const state = await contract.getSubState("to_withdraws");
             if (state) {
-                return Object.keys(state).map(key => {
-                    const pair = state[key];
+                const to_withdraws = state["to_withdraws"];
+                return Object.keys(to_withdraws).map(key => {
+                    const pair = to_withdraws[key];
                     return {
                         index: key,
                         contract_amount: pair.arguments[0],

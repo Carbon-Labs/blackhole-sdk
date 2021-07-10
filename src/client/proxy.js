@@ -251,13 +251,25 @@ module.exports = (privateKey) => {
         },
         getTokenInfo: async ({isZRC2, token_address}) => {
             const variableName = isZRC2 ? "token_emission_rate" : "zil_emission_rate";
+            let amount = 0;
+            if (isZRC2) {
+                const tokenAmountContract = zilliqa.at(contract_address);
+                const init = await tokenAmountContract.getInit();
+                if (init) {
+                    const amountContract = init.find(({vname}) => vname === "contract_amount");
+                    if (amountContract) {
+                        amount = parseInt(amountContract.value);
+                    }
+                }
+            }
             const stateEmissionRate = await contract.getSubState(variableName, token_address ? [token_address.toString()] : undefined);
             const stateFee = await contract.getSubState("fee_rate");
             const statePrice = await contract.getSubState("deposit_carb_price");
             const res = {
                 emissionRate: 0,
                 fee: 0,
-                price: 0
+                price: 0,
+                amount
             };
             if (stateEmissionRate) {
                 const o = stateEmissionRate[variableName];
@@ -269,6 +281,7 @@ module.exports = (privateKey) => {
             if (statePrice) {
                 res.price = parseInt(statePrice["deposit_carb_price"]);
             }
+            return res;
         }
     });
 };

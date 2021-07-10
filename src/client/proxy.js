@@ -249,7 +249,7 @@ module.exports = (privateKey) => {
             }
             return 0;
         },
-        getTokenInfo: async ({isZRC2, token_address}) => {
+        getTokenInfo: async ({isZRC2, token_address, contract_address}) => {
             const variableName = isZRC2 ? "token_emission_rate" : "zil_emission_rate";
             let amount = 0;
             if (isZRC2) {

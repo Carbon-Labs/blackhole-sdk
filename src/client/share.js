@@ -46,10 +46,10 @@ module.exports = ({address, privateKey}) => {
                     pi_b: [(data[3].map(p => BigInt(p))), (data[4].map(p => BigInt(p))), (data[5].map(p => BigInt(p)))],
                     pi_c: data[6].map(p => BigInt(p)),
                     publicSignals: data[7].map(p => BigInt(p)),
-                    index: BigInt(data[8])
                 };
             }
             return null;
         },
+        getWalletAddress: () => zilliqa.address,
     });
 };

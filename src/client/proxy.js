@@ -33,6 +33,7 @@ module.exports = (privateKey) => {
                                   root,
                                   nullifier,
                                   recipient,
+                                  node,
                                   treeIndex
                               }) => zilliqa.callTransition(proxyContract, "WithdrawToken", [
             {
@@ -61,39 +62,44 @@ module.exports = (privateKey) => {
                 value: `${recipient}`,
             },
             {
-                vname: 'treeIndex',
-                type: 'ByStr20',
-                value: `${treeIndex}`,
-            },
-            {
                 vname: 'pi_a',
                 type: 'List Uint256',
-                value: `${proof.pi_a.map(point => point.toString())}`,
+                value: proof.pi_a.map(point => point.toString()),
             },
             {
                 vname: 'pi_b_1',
                 type: 'List Uint256',
-                value: `${proof.pi_b[0].map(point => point.toString())}`,
+                value: proof.pi_b[0].map(point => point.toString()),
             },
             {
                 vname: 'pi_b_2',
                 type: 'List Uint256',
-                value: `${proof.pi_b[1].map(point => point.toString())}`,
+                value: proof.pi_b[1].map(point => point.toString()),
             },
             {
                 vname: 'pi_b_3',
                 type: 'List Uint256',
-                value: `${proof.pi_b[1].map(point => point.toString())}`,
+                value: proof.pi_b[1].map(point => point.toString()),
             },
             {
                 vname: 'pi_c',
                 type: 'List Uint256',
-                value: `${proof.pi_c.map(point => point.toString())}`,
+                value: proof.pi_c.map(point => point.toString()),
             },
             {
                 vname: 'publicSignals',
                 type: 'List Uint256',
-                value: `${proof.publicSignals.map(point => point.toString())}`,
+                value: proof.publicSignals.map(point => point.toString()),
+            },
+            {
+                vname: 'node',
+                type: 'ByStr20',
+                value: `${node}`,
+            },
+            {
+                vname: 'treeIndex',
+                type: 'Uint256',
+                value: `${treeIndex}`,
             },
         ]),
         WithdrawZil: async ({
@@ -102,6 +108,7 @@ module.exports = (privateKey) => {
                                 root,
                                 nullifier,
                                 recipient,
+                                node,
                                 treeIndex
                             }) => zilliqa.callTransition(proxyContract, "WithdrawZil", [
             {
@@ -125,39 +132,44 @@ module.exports = (privateKey) => {
                 value: `${recipient}`,
             },
             {
-                vname: 'treeIndex',
-                type: 'ByStr20',
-                value: `${treeIndex}`,
-            },
-            {
                 vname: 'pi_a',
                 type: 'List Uint256',
-                value: `${proof.pi_a.map(point => point.toString())}`,
+                value: proof.pi_a.map(point => point.toString()),
             },
             {
                 vname: 'pi_b_1',
                 type: 'List Uint256',
-                value: `${proof.pi_b[0].map(point => point.toString())}`,
+                value: proof.pi_b[0].map(point => point.toString()),
             },
             {
                 vname: 'pi_b_2',
                 type: 'List Uint256',
-                value: `${proof.pi_b[1].map(point => point.toString())}`,
+                value: proof.pi_b[1].map(point => point.toString()),
             },
             {
                 vname: 'pi_b_3',
                 type: 'List Uint256',
-                value: `${proof.pi_b[1].map(point => point.toString())}`,
+                value: proof.pi_b[2].map(point => point.toString()),
             },
             {
                 vname: 'pi_c',
                 type: 'List Uint256',
-                value: `${proof.pi_c.map(point => point.toString())}`,
+                value: proof.pi_c.map(point => point.toString()),
             },
             {
                 vname: 'publicSignals',
                 type: 'List Uint256',
-                value: `${proof.publicSignals.map(point => point.toString())}`,
+                value: proof.publicSignals.map(point => point.toString()),
+            },
+            {
+                vname: 'node',
+                type: 'ByStr20',
+                value: `${node}`,
+            },
+            {
+                vname: 'treeIndex',
+                type: 'Uint256',
+                value: `${treeIndex}`,
             },
         ]),
         VerifyProof: async ({
@@ -191,16 +203,17 @@ module.exports = (privateKey) => {
                 value: `${index.toString()}`,
             },
         ]),
-        getToProof: async () => {
+        getToProof: async (verifier) => {
             const state = await contract.getSubState("to_withdraws");
             if (state) {
                 const to_withdraws = state["to_withdraws"];
-                return Object.keys(to_withdraws).map(key => {
+                return Object.keys(to_withdraws).filter(key => to_withdraws[key].arguments[0].toLowerCase() === verifier.toLowerCase()).map(key => {
                     const pair = to_withdraws[key];
                     return {
                         index: key,
-                        contract_amount: pair.arguments[0],
-                        nullifier: BigInt(pair.arguments[1]),
+                        verifer: pair.arguments[0],
+                        contract_amount: pair.arguments[1],
+                        nullifier: BigInt(pair.arguments[2]),
                     };
                 });
             }
@@ -282,6 +295,14 @@ module.exports = (privateKey) => {
                 res.price = parseInt(statePrice["deposit_carb_price"]);
             }
             return res;
+        },
+        getVerifiers: async () => {
+            const state = await contract.getSubState("verifiers");
+            if (state && state["verifiers"]) {
+                const data = state["verifiers"];
+                return Object.keys(data).map(key => key);
+            }
+            return []
         }
     });
 };

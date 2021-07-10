@@ -248,6 +248,27 @@ module.exports = (privateKey) => {
                 return parseInt(state["fee_rate"]) / 10000;
             }
             return 0;
+        },
+        getTokenInfo: async ({isZRC2, token_address}) => {
+            const variableName = isZRC2 ? "token_emission_rate" : "zil_emission_rate";
+            const stateEmissionRate = await contract.getSubState(variableName, token_address ? [token_address.toString()] : undefined);
+            const stateFee = await contract.getSubState("fee_rate");
+            const statePrice = await contract.getSubState("deposit_carb_price");
+            const res = {
+                emissionRate: 0,
+                fee: 0,
+                price: 0
+            };
+            if (stateEmissionRate) {
+                const o = stateEmissionRate[variableName];
+                res.emissionRate = isZRC2 ? parseInt(o[token_address.toString()]) : parseInt(o);
+            }
+            if (stateFee) {
+                res.fee = parseInt(stateFee["fee_rate"]);
+            }
+            if (statePrice) {
+                res.price = parseInt(statePrice["deposit_carb_price"]);
+            }
         }
     });
 };

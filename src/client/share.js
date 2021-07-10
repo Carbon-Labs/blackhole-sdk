@@ -6,7 +6,7 @@ module.exports = ({address, privateKey}) => {
         getCommitments: async (index) => {
             const state = await contract.getSubState("tree", [index.toString()]);
             if (state) {
-                return state["tree"][index.toString()].map(c => BigInt(c));
+                return state["tree"][index.toString()].map(c => BigInt(c)).reverse();
             }
             return [];
         },

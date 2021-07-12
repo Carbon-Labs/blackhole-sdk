@@ -1,14 +1,14 @@
 const Zilliqa = require("../../zilliqa");
-const {proxyContract} = require("../../config");
-module.exports = (privateKey) => {
-    const zilliqa = Zilliqa(privateKey);
+module.exports = ({proxyContract, privateKey, blockchain, isTest, gasLimit = 20000}) => {
+    const zilliqa = Zilliqa({privateKey, blockchain, isTest, gasLimit});
     const contract = zilliqa.at(proxyContract);
     return Object.freeze({
         proxyContract,
         DepositToken: async ({
                                  commit,
                                  token_address,
-                                 contract_amount
+                                 contract_amount,
+                                 amount
                              }) => zilliqa.callTransition(proxyContract, "DepositToken", [
             {
                 vname: 'commit',
@@ -25,153 +25,9 @@ module.exports = (privateKey) => {
                 type: 'ByStr20',
                 value: `${contract_amount}`,
             }
-        ]),
-        WithdrawToken: async ({
-                                  token_address,
-                                  contract_amount,
-                                  proof,
-                                  root,
-                                  nullifier,
-                                  recipient,
-                                  node,
-                                  treeIndex
-                              }) => zilliqa.callTransition(proxyContract, "WithdrawToken", [
-            {
-                vname: 'token_address',
-                type: 'ByStr20',
-                value: `${token_address}`,
-            },
-            {
-                vname: 'contract_amount',
-                type: 'ByStr20',
-                value: `${contract_amount}`,
-            },
-            {
-                vname: 'root',
-                type: 'Uint256',
-                value: `${root}`,
-            },
-            {
-                vname: 'nullifier',
-                type: 'Uint256',
-                value: `${nullifier}`,
-            },
-            {
-                vname: 'recipient',
-                type: 'ByStr20',
-                value: `${recipient}`,
-            },
-            {
-                vname: 'pi_a',
-                type: 'List Uint256',
-                value: proof.pi_a.map(point => point.toString()),
-            },
-            {
-                vname: 'pi_b_1',
-                type: 'List Uint256',
-                value: proof.pi_b[0].map(point => point.toString()),
-            },
-            {
-                vname: 'pi_b_2',
-                type: 'List Uint256',
-                value: proof.pi_b[1].map(point => point.toString()),
-            },
-            {
-                vname: 'pi_b_3',
-                type: 'List Uint256',
-                value: proof.pi_b[1].map(point => point.toString()),
-            },
-            {
-                vname: 'pi_c',
-                type: 'List Uint256',
-                value: proof.pi_c.map(point => point.toString()),
-            },
-            {
-                vname: 'publicSignals',
-                type: 'List Uint256',
-                value: proof.publicSignals.map(point => point.toString()),
-            },
-            {
-                vname: 'node',
-                type: 'ByStr20',
-                value: `${node}`,
-            },
-            {
-                vname: 'treeIndex',
-                type: 'Uint256',
-                value: `${treeIndex}`,
-            },
-        ]),
-        WithdrawZil: async ({
-                                amount,
-                                proof,
-                                root,
-                                nullifier,
-                                recipient,
-                                node,
-                                treeIndex
-                            }) => zilliqa.callTransition(proxyContract, "WithdrawZil", [
-            {
-                vname: 'amount',
-                type: 'Uint128',
-                value: `${amount}`,
-            },
-            {
-                vname: 'root',
-                type: 'Uint256',
-                value: `${root}`,
-            },
-            {
-                vname: 'nullifier',
-                type: 'Uint256',
-                value: `${nullifier}`,
-            },
-            {
-                vname: 'recipient',
-                type: 'ByStr20',
-                value: `${recipient}`,
-            },
-            {
-                vname: 'pi_a',
-                type: 'List Uint256',
-                value: proof.pi_a.map(point => point.toString()),
-            },
-            {
-                vname: 'pi_b_1',
-                type: 'List Uint256',
-                value: proof.pi_b[0].map(point => point.toString()),
-            },
-            {
-                vname: 'pi_b_2',
-                type: 'List Uint256',
-                value: proof.pi_b[1].map(point => point.toString()),
-            },
-            {
-                vname: 'pi_b_3',
-                type: 'List Uint256',
-                value: proof.pi_b[2].map(point => point.toString()),
-            },
-            {
-                vname: 'pi_c',
-                type: 'List Uint256',
-                value: proof.pi_c.map(point => point.toString()),
-            },
-            {
-                vname: 'publicSignals',
-                type: 'List Uint256',
-                value: proof.publicSignals.map(point => point.toString()),
-            },
-            {
-                vname: 'node',
-                type: 'ByStr20',
-                value: `${node}`,
-            },
-            {
-                vname: 'treeIndex',
-                type: 'Uint256',
-                value: `${treeIndex}`,
-            },
-        ]),
+        ], amount),
+        WithdrawToken: async (params) => zilliqa.callTransition(proxyContract, "WithdrawToken", params),
+        WithdrawZil: async (params) => zilliqa.callTransition(proxyContract, "WithdrawZil", params),
         VerifyProof: async ({
                                 contract_address,
                                 nullifier,
@@ -214,6 +70,7 @@ module.exports = (privateKey) => {
                         verifer: pair.arguments[0],
                         contract_amount: pair.arguments[1],
                         nullifier: BigInt(pair.arguments[2]),
+                        treeIndex: BigInt(pair.arguments[3]),
                     };
                 });
             }
@@ -296,10 +153,10 @@ module.exports = (privateKey) => {
             }
             return res;
         },
-        getVerifiers: async () => {
-            const state = await contract.getSubState("verifiers");
-            if (state && state["verifiers"]) {
-                const data = state["verifiers"];
+        getRelayers: async () => {
+            const state = await contract.getSubState("relayers");
+            if (state && state["relayers"]) {
+                const data = state["relayers"];
                 return Object.keys(data).map(key => key);
             }
             return []

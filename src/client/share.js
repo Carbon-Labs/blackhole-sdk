@@ -1,6 +1,6 @@
 const Zilliqa = require("../../zilliqa");
-module.exports = ({address, privateKey}) => {
-    const zilliqa = Zilliqa(privateKey);
+module.exports = ({address, privateKey, blockchain, isTest, gasLimit = 20000, amount = 0}) => {
+    const zilliqa = Zilliqa({privateKey, blockchain, isTest, gasLimit, amount});
     const contract = zilliqa.at(address);
     return Object.freeze({
         getCommitments: async (index) => {
@@ -13,7 +13,7 @@ module.exports = ({address, privateKey}) => {
         isSpent: async (nullifier) => {
             const state = await contract.getSubState("nullifiers", [nullifier.toString()]);
             if (state) {
-                return state["nullifiers"][nullifier.toString()].constructor === "True";
+                return state["nullifiers"][nullifier.toString()].constructor === "False";
             }
             return false;
         },
@@ -39,13 +39,12 @@ module.exports = ({address, privateKey}) => {
                     return null
                 }
                 return {
-                    root: data[0],
-                    recipient: data[1],
+                    recipient: data[0],
                     nullifier,
-                    pi_a: data[2].map(p => BigInt(p)),
-                    pi_b: [(data[3].map(p => BigInt(p))), (data[4].map(p => BigInt(p))), (data[5].map(p => BigInt(p)))],
-                    pi_c: data[6].map(p => BigInt(p)),
-                    publicSignals: data[7].map(p => BigInt(p)),
+                    pi_a: data[1].map(p => BigInt(p)),
+                    pi_b: [(data[2].map(p => BigInt(p))), (data[3].map(p => BigInt(p))), (data[4].map(p => BigInt(p)))],
+                    pi_c: data[5].map(p => BigInt(p)),
+                    publicSignals: data[6].map(p => BigInt(p)),
                 };
             }
             return null;

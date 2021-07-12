@@ -1,12 +1,5 @@
 module.exports = Object.freeze({
-    isTest: true,
-    blockchain: {
-        websocket: "wss://dev-ws.zilliqa.com",
-        api: "https://dev-api.zilliqa.com",
-        chainId: 333,
-        msgVersion: 1,
-    },
-    carbonToken: process.env.NODE_ENV === "production" ? "0x1720dcaef87686003f0532792450b03966543d6a" : "0x1720dcaef87686003f0532792450b03966543d6a",
+    carbonToken: process.env.NODE_ENV === "production" ? "0xbF79E16872fAd92C16810ddD2A7B9B6858C7b756" : "0x1720dcaef87686003f0532792450b03966543d6a",
     proxyContract: process.env.NODE_ENV === "production" ? "0xb2d1b251bacec821ea08883aa55d1f914255fa52" : "0xb2d1b251bacec821ea08883aa55d1f914255fa52",
     files: {
         withdrawProvUrl: "https://siasky.net/AABR0XVHg7SDyVKNk0xqHnkojFIzharCC3QtpyTLHYojDg",

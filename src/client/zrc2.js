@@ -1,10 +1,10 @@
 const Zilliqa = require("../../zilliqa");
 const share = require("./share");
-module.exports = ({address, privateKey}) => {
-    const zilliqa = Zilliqa(privateKey);
+module.exports = ({address, privateKey, blockchain, isTest, gasLimit = 20000}) => {
+    const zilliqa = Zilliqa({privateKey, blockchain, isTest, gasLimit, amount});
     const contract = zilliqa.at(address);
     return Object.freeze({
-        ...share({address, privateKey}),
+        ...share({address, privateKey, blockchain, isTest, gasLimit}),
         getFraction: async () => {
             const init = await contract.getInit();
             if (init) {

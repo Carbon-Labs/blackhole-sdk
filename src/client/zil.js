@@ -1,16 +1,15 @@
 const Zilliqa = require("../../zilliqa");
 const share = require("./share");
-module.exports = ({address, privateKey}) => {
-    const zilliqa = Zilliqa(privateKey);
-    const contract = zilliqa.at(address);
+module.exports = ({address, privateKey, blockchain, isTest, gasLimit = 20000}) => {
+    const zilliqa = Zilliqa({privateKey, blockchain, isTest, gasLimit, amount});
     return Object.freeze({
-        ...share({address, privateKey}),
-        Deposit: async ({commit}) => zilliqa.callTransition(address, "Deposit", [
+        ...share({address, privateKey, blockchain, isTest, gasLimit}),
+        Deposit: async ({commit, amount}) => zilliqa.callTransition(address, "Deposit", [
             {
                 vname: 'commit',
                 type: 'Uint256',
                 value: `${commit}`,
             },
-        ]),
+        ], amount),
     });
 };

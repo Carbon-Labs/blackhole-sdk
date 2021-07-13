@@ -13,7 +13,7 @@ module.exports = ({address, privateKey, blockchain, isTest, gasLimit = 20000, am
         isSpent: async (nullifier) => {
             const state = await contract.getSubState("nullifiers", [nullifier.toString()]);
             if (state) {
-                return state["nullifiers"][nullifier.toString()].constructor === "False";
+                return state["nullifiers"][nullifier.toString()].constructor === "True";
             }
             return false;
         },

@@ -44,7 +44,7 @@ module.exports = ({privateKey, blockchain, isTest, gasLimit = 20000}) => {
         return "0x" + deployedContract.address;
     };
 
-    const callTransition = async (address, tag, params, amount = 0) => {
+    const callTransition = async (address, tag, params, amount = 0, nonce) => {
         const deployedContract = zilliqa.contracts.at(address);
         const myGasPrice = units.toQa('2500', units.Units.Li);
         const callTx = await deployedContract.callWithoutConfirm(tag, params,
@@ -54,6 +54,7 @@ module.exports = ({privateKey, blockchain, isTest, gasLimit = 20000}) => {
                 amount: new BN(amount),
                 gasPrice: myGasPrice,
                 gasLimit: Long.fromNumber(gasLimit),
+                nonce
             },
             isTest,
         );

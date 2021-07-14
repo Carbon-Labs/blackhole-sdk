@@ -33,6 +33,7 @@ module.exports = ({proxyContract, privateKey, blockchain, isTest, gasLimit = 200
                                 nullifier,
                                 verified,
                                 index,
+                                nonce
                             }) => zilliqa.callTransition(proxyContract, "VerifyProof", [
             {
                 vname: "proof",
@@ -58,7 +59,7 @@ module.exports = ({proxyContract, privateKey, blockchain, isTest, gasLimit = 200
                 type: 'Uint256',
                 value: `${index.toString()}`,
             },
-        ]),
+        ], 0, nonce),
         getToProof: async (verifier) => {
             const state = await contract.getSubState("to_withdraws");
             if (state) {

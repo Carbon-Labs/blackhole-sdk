@@ -77,6 +77,23 @@ module.exports = ({proxyContract, privateKey, blockchain, isTest, gasLimit = 200
             }
             return [];
         },
+        getToVerifierProof: async () => {
+            const state = await contract.getSubState("to_withdraws");
+            if (state) {
+                const to_withdraws = state["to_withdraws"];
+                return Object.keys(to_withdraws).map(key => {
+                    const pair = to_withdraws[key];
+                    return {
+                        index: key,
+                        verifer: pair.arguments[0],
+                        contract_amount: pair.arguments[1],
+                        nullifier: BigInt(pair.arguments[2]),
+                        treeIndex: BigInt(pair.arguments[3]),
+                    };
+                });
+            }
+            return [];
+        },
         getZRC2Blackhole: async (token_address) => {
             const state = await contract.getSubState("token_blackholes", [token_address.toLowerCase()]);
             if (state) {

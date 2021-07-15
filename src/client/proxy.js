@@ -26,15 +26,15 @@ module.exports = ({proxyContract, privateKey, blockchain, isTest, gasLimit = 200
                 value: `${contract_amount}`,
             }
         ], amount),
-        WithdrawToken: async (params, callback) => zilliqa.callTransition(proxyContract, "WithdrawToken", params,  0, undefined, callback),
-        WithdrawZil: async (params, callback) => zilliqa.callTransition(proxyContract, "WithdrawZil", params,  0, undefined, callback),
+        WithdrawToken: async (params, callback) => zilliqa.callTransition(proxyContract, "WithdrawToken", params, 0, undefined, callback),
+        WithdrawZil: async (params, callback) => zilliqa.callTransition(proxyContract, "WithdrawZil", params, 0, undefined, callback),
         VerifyProof: async ({
                                 contract_address,
                                 nullifier,
                                 verified,
                                 index,
                                 nonce
-                            }) => zilliqa.callTransition(proxyContract, "VerifyProof", [
+                            }, callback) => zilliqa.callTransition(proxyContract, "VerifyProof", [
             {
                 vname: "proof",
                 type: "Pair Uint256 Bool",
@@ -59,7 +59,7 @@ module.exports = ({proxyContract, privateKey, blockchain, isTest, gasLimit = 200
                 type: 'Uint256',
                 value: `${index.toString()}`,
             },
-        ], 0, nonce),
+        ], 0, nonce, callback),
         getToProof: async (verifier) => {
             const state = await contract.getSubState("to_withdraws");
             if (state) {

@@ -61,7 +61,8 @@ module.exports = ({privateKey, blockchain, isTest, gasLimit = 20000}) => {
         if (!callTx.id) {
             throw new Error("no transaction id found");
         }
-        if (callback && typeof callback === "function") {
+        console.log("callback type", callback ? typeof callback : "");
+        if (callback && (typeof callback === "function")) {
             await callback(callTx.id);
         }
         console.log(`The transaction id is: 0x${callTx.id}`);

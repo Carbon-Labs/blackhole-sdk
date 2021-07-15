@@ -44,7 +44,7 @@ module.exports = ({privateKey, blockchain, isTest, gasLimit = 20000}) => {
         return "0x" + deployedContract.address;
     };
 
-    const callTransition = async (address, tag, params, amount = 0, nonce) => {
+    const callTransition = async (address, tag, params, amount = 0, nonce, callback) => {
         const deployedContract = zilliqa.contracts.at(address);
         const myGasPrice = units.toQa('2500', units.Units.Li);
         const callTx = await deployedContract.callWithoutConfirm(tag, params,
@@ -58,6 +58,12 @@ module.exports = ({privateKey, blockchain, isTest, gasLimit = 20000}) => {
             },
             isTest,
         );
+        if (!callTx.id) {
+            throw new Error("no transaction id found");
+        }
+        if (callback && typeof callback === "function") {
+            await callback(callTx.id);
+        }
         console.log(`The transaction id is: 0x${callTx.id}`);
         console.log(`Waiting transaction be confirmed....`);
         const confirmedTxn = await callTx.confirm(callTx.id);

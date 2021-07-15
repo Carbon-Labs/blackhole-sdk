@@ -26,8 +26,8 @@ module.exports = ({proxyContract, privateKey, blockchain, isTest, gasLimit = 200
                 value: `${contract_amount}`,
             }
         ], amount),
-        WithdrawToken: async (params) => zilliqa.callTransition(proxyContract, "WithdrawToken", params),
-        WithdrawZil: async (params) => zilliqa.callTransition(proxyContract, "WithdrawZil", params),
+        WithdrawToken: async (params, callback) => zilliqa.callTransition(proxyContract, "WithdrawToken", params,  0, undefined, callback),
+        WithdrawZil: async (params, callback) => zilliqa.callTransition(proxyContract, "WithdrawZil", params,  0, undefined, callback),
         VerifyProof: async ({
                                 contract_address,
                                 nullifier,

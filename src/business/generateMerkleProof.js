@@ -24,8 +24,8 @@ module.exports = (blackhole) => async ({commitment, nullifier, index}) => {
     // Get all deposit commitment from smart contract and assemble merkle tree from them
     console.log('Getting current state from blackhole contract');
     let tree = await createTree({commitment, index, blackhole});
-    if (!tree.tree) {
-        tree = await createTree({commitment, index: index + 1, blackhole});
+    if (!tree || !tree.tree) {
+        tree = await createTree({commitment, index: BigInt(index) + BigInt(1), blackhole});
     }
     if (!tree.tree) {
         throw new Error("No commit index found");

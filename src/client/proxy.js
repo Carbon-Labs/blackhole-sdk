@@ -178,6 +178,13 @@ module.exports = ({proxyContract, privateKey, blockchain, isTest, gasLimit = 200
                 return Object.keys(data).map(key => key);
             }
             return []
+        },
+        getTokens: async () => {
+            const state = await contract.getSubState("tokens");
+            if (state && state["tokens"]) {
+                return state["tokens"];
+            }
+            return []
         }
     });
 };
